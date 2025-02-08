@@ -1,61 +1,76 @@
-//1. Crear una Lista vacía
-let listaGenerica = [];
+let numeroSecreto = 0;
+let intentos = 0;
+let listaNumerosSorteados = [];
+let numeroMaximo = 10;
 
-//2. lista de lenguajes de programación llamada "lengugesDeProgramacion
-let lenguagesDeProgramacion = ['JavaScript', 'C', 'C++', 'Kotlin', 'Python'];
 
-//3. Agrega a la lista "lenguagesDeProgramacion los siguientes elementos: 'Java', 'Ruby' y 'GoLang'.
-lenguagesDeProgramacion.push('Java', 'Ruby', 'GoLang');
 
-//4. Crea una función que muestre en la consola todos los elementos de la lista
-function mostrarLista() {
-    console.log(lenguagesDeProgramacion);
+function asignarTextoElemento(elemento, texto) {
+    let elementoHTML = document.querySelector(elemento);
+    elementoHTML.innerHTML = texto;
+    return;
 }
 
-//5. Crea una función que muestre en la consola todos los elementos de la lista
-function listaInversa() {
-    console.log(lenguagesDeProgramacion.reverse());
+function verificarIntento() {
+    let numeroDeUsuario = parseInt(document.getElementById('valorUsuario').value);
+    
+    if (numeroDeUsuario === numeroSecreto) {
+        asignarTextoElemento('p',`Acertaste el número en ${intentos} ${(intentos === 1) ? 'vez' : 'veces'}`);
+        document.getElementById('reiniciar').removeAttribute('disabled');
+    } else {
+        //El usuario no acertó.
+        if (numeroDeUsuario > numeroSecreto) {
+            asignarTextoElemento('p','El número secreto es menor');
+        } else {
+            asignarTextoElemento('p','El número secreto es mayor');
+        }
+        intentos++;
+        limpiarCaja();
+    }
+    return;
 }
 
-//6. Crea una función que calcule el promedio de los elementos en una lista de números.
-function CalcularPromedio(listaNumeros) {
-    const suma = listaNumeros.reduce((acc, num) => acc + num, 0);
-    return suma / listaNumeros.length;
+function limpiarCaja() {
+    document.querySelector('#valorUsuario').value = '';
 }
 
-//7. Crea una función que muestre en la consola el número más grande y el número más pequeño en una lista.
-function MaxMin(listaNumeros) {
-    const max = Math.max(listaNumeros);
-    const min = Math.min(listaNumeros);
-    console.log(`El numero Máximo es ${max}, el numero Mínimo es ${min}`);
+function generarNumeroSecreto() {
+    let numeroGenerado =  Math.floor(Math.random()*numeroMaximo)+1;
+
+    console.log(numeroGenerado);
+    console.log(listaNumerosSorteados);
+    //Si ya sorteamos todos los números
+    if (listaNumerosSorteados.length == numeroMaximo) {
+        asignarTextoElemento('p','Ya se sortearon todos los números posibles');
+    } else {
+        //Si el numero generado está incluido en la lista 
+        if (listaNumerosSorteados.includes(numeroGenerado)) {
+            return generarNumeroSecreto();
+        } else {
+            listaNumerosSorteados.push(numeroGenerado);
+            return numeroGenerado;
+        }
+    }
 }
 
-//8. Crea una función que devuelva la suma de todos los elementos en una lista.
-function sumaLista(listaNumeros) {
-    return listaNumeros.reduce((acc, num) => acc + num, 0);
+function condicionesIniciales() {
+    asignarTextoElemento('h1','Juego del número secreto!');
+    asignarTextoElemento('p',`Indica un número del 1 al ${numeroMaximo}`);
+    numeroSecreto = generarNumeroSecreto();
+    intentos = 1;
+    console.log(numeroSecreto);
 }
 
-// 9. Crea una función que devuelva la posición en la lista donde se encuentra un elemento pasado como parámetro, o -1 si no existe en la lista.
-function encontrarElemento(lista, elemento) {
-    return lista.indexOf(elemento);
+function reiniciarJuego() {
+    //limpiar caja
+    limpiarCaja();
+    //Indicar mensaje de intervalo de números 
+    //Generar el número aleatorio
+    //Inicializar el número intentos
+    condicionesIniciales();
+    //Deshabilitar el botón de nuevo juego
+    document.querySelector('#reiniciar').setAttribute('disabled','true');
+    
 }
 
-// 10. Crea una función que reciba dos listas de números del mismo tamaño y devuelva una nueva lista con la suma de los elementos uno a uno.
-function sumarListas(lista1, lista2) {
-    return lista1.map((num, index) => num + lista2[index]);
-}
-
-// 11. Crea una función que reciba una lista de números y devuelva una nueva lista con el cuadrado de cada número.
-function cuadrarNumeros(listaNumeros) {
-    return listaNumeros.map(num => num ** 2);
-}
-
-// Ejemplo de uso
-mostrarLista(); // Muestra todos los lenguajes
-listaInversa(); // Muestra los lenguajes en orden inverso
-console.log(CalcularPromedio([1, 2, 3, 4, 5])); // Promedio: 3
-MaxMin([1, 2, 3, 4, 5]); // Muestra máximo y mínimo
-console.log(sumaLista([1, 2, 3])); // Suma: 6
-console.log(encontrarElemento(lenguagesDeProgramacion, 'Python')); // Posición de 'Python'
-console.log(sumarListas([1, 2, 3], [4, 5, 6])); // Suma de listas: [5, 7, 9]
-console.log(cuadrarNumeros([1, 2, 3])); // Cuadrados: [1, 4, 9]
+condicionesIniciales();
